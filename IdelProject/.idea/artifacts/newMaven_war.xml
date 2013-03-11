@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="newMaven:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="newMaven.war">
+      <element id="artifact" artifact-name="newMaven:war exploded" />
+    </root>
+  </artifact>
+</component>
