@@ -1,9 +1,10 @@
 package com.app.model;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
     private long id;
     private String userName;
     private String userPass;

@@ -3,37 +3,45 @@ package com.app.dao;
 import com.app.model.User;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.classic.Session;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: vpestov
- * Date: 3/11/13
- * Time: 2:11 PM
- * To change this template use File | Settings | File Templates.
- */
-public class DaoImpl extends HibernateDaoSupport implements Dao{
-    @Override
-    public User loadById (long id) {
-        final Query query = getSessionFactory().getCurrentSession().createQuery("from User u where u.id=:userId")
-                .setParameter("userId",id);
-        return (User) query.list().get(0);
+@Repository
+public class DaoImpl {
+
+    private SessionFactory sessionFactory;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public <T extends Serializable> T getById(Class<T>entityClass,long id) {
+        return (T) getSession().get(entityClass,id);
     }
 
-    @Override
-    public List<User> loadAll() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Transactional
+    public <T extends Serializable> List<T> getAll() {
+        final Query query = getSession().createQuery("");
+        return query.list();
     }
 
-    @Override
-    public void delete(User u) {
-        getHibernateTemplate().delete(u);
+    @Transactional
+    public <T extends Serializable> void delete(T u) {
+        getSession().delete(u);
     }
 
-    @Override
-    public void save(User u) {
-        getHibernateTemplate().save(u);
+    @Transactional(propagation = Propagation.REQUIRED)
+    public <T extends Serializable> void save(T u) {
+        getSession().save(u);
+    }
+
+    private Session getSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }
